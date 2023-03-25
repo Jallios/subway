@@ -11,12 +11,6 @@ def DBExecute(table,command,values):
             if(command == "insert"):
                 cursor.execute('insert into [dbo].[User] ([Login_User],[Password_User],[Balance],[Role_ID],[Card_ID]) values (?,?,?,?,?)',(values[0],values[1],values[2],values[3],values[4]))
                 cursor.commit()
-            elif(command == "delete"):
-                cursor.execute('Delete from [dbo].[User] where [ID_User] = ?',[values[0]])
-                cursor.commit()
-            elif(command == "update"):
-                cursor.execute('UPDATE [dbo].[User] SET [Login_User] = ?, [Password_User] = ?, [Balance] = ?, [Role_ID] = ?, [Card_ID] = ? WHERE [ID_User] = ?',(values[0],values[1],values[2],values[3],values[4],values[5]))
-                cursor.commit()
             elif(command == "updateBalance"):
                 cursor.execute('UPDATE [dbo].[User] SET [Balance] = ? WHERE [ID_User] = ?',(values[0],values[1]))
                 cursor.commit()
@@ -29,7 +23,7 @@ def DBExecute(table,command,values):
                 return cursor.execute(f'select * from [dbo].[User] WHERE [ID_User] = ?',[values[0]]).fetchall()
         case "Product":
             if(command == "insert"):
-                cursor.execute('insert into [dbo].[Product] ([Product],[Quality],[Cost_TP]) values (?,?,?)',(values[0],values[1],values[2]))
+                cursor.execute('insert into [dbo].[Product] ([Product],[Quality],[Cost_TP], [PC_ID]) values (?,?,?,?)',(values[0],values[1],values[2],values[3]))
                 cursor.commit()
             elif(command == "delete"):
                 cursor.execute('Delete from [dbo].[Product] where [ID_Product] = ?',[values[0]])
@@ -40,6 +34,12 @@ def DBExecute(table,command,values):
             elif(command == "select"):
                 product = cursor.execute(f'select * from [dbo].[Product]').fetchall()
                 return product
+            elif(command == "selectProduct"):
+                product = cursor.execute(f'select * from [dbo].[Product] WHERE [PC_ID] = 1').fetchall()
+                return product
+            elif(command == "selectToping"):
+                product = cursor.execute(f'select * from [dbo].[Product] WHERE [PC_ID] = 2').fetchall()
+                return product
             elif(command == "selectID"):
                 product = cursor.execute(f'select * from [dbo].[Product] WHERE [ID_Product] = ?',[values[0]]).fetchall()
                 return product
@@ -47,9 +47,6 @@ def DBExecute(table,command,values):
             if(command == "insert"):
                 cursor.execute('insert into [dbo].[Order] ([Cost_Order],[DateTime_Order],[User_ID]) values (?,?,?)',(values[0],values[1],values[2]))
                 cursor.commit()
-            elif(command == "select"):
-                product = cursor.execute(f'select * from [dbo].[Product]').fetchall()
-                return product
-            elif(command == "selectID"):
-                product = cursor.execute(f'select * from [dbo].[Product] WHERE [ID_Product] = ?',[values[0]]).fetchall()
-                return product
+            elif(command == "selectUser"):
+                order = cursor.execute(f'select SUM([Cost_Order]) from [dbo].[Order] WHERE [User_ID] = ?',[values[0]]).fetchall()
+                return order
